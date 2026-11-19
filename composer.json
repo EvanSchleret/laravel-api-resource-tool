@@ -1,0 +1,60 @@
+{
+    "name": "evanschleret/laravel-api-resource-tool",
+    "description": "Reusable API resource responses and request-driven Eloquent scopes for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Evan Schleret",
+            "homepage": "https://github.com/EvanSchleret"
+        }
+    ],
+    "keywords": [
+        "api",
+        "eloquent",
+        "laravel",
+        "resources"
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/database": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0"
+    },
+    "suggest": {
+        "illuminate/validation": "Required to format validation exceptions globally.",
+        "laravel/scout": "Required to paginate Laravel Scout builders."
+    },
+    "autoload": {
+        "psr-4": {
+            "EvanSchleret\\LaravelApiResourceTool\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "laravel/pint": "^1.20",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "phpunit/phpunit": "^10.5 || ^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EvanSchleret\\LaravelApiResourceTool\\LaravelApiResourceToolServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "format": "vendor/bin/pint",
+        "format:check": "vendor/bin/pint --test"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
