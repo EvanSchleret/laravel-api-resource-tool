@@ -1,0 +1,63 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.2'
+            laravel: '12'
+          - php: '8.3'
+            laravel: '12'
+          - php: '8.3'
+            laravel: '13'
+          - php: '8.4'
+            laravel: '12'
+          - php: '8.4'
+            laravel: '13'
+          - php: '8.5'
+            laravel: '12'
+          - php: '8.5'
+            laravel: '13'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo_sqlite
+          coverage: none
+
+      - name: Select Laravel compatibility version
+        run: |
+          composer require --no-update --no-interaction \
+            "illuminate/database:^${{ matrix.laravel }}.0" \
+            "illuminate/http:^${{ matrix.laravel }}.0" \
+            "illuminate/support:^${{ matrix.laravel }}.0"
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run tests
+        run: composer test
+
+      - name: Check formatting
+        run: composer format:check
+
+      - name: Validate Composer metadata
+        run: composer validate --no-check-publish
