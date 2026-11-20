@@ -4,6 +4,13 @@
 
 <img src="laravel-api-resource-tool-banner.png" alt="Laravel API Resource Tool — JSON resource responses and request-driven Eloquent scopes" width="900">
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/evanschleret/laravel-api-resource-tool.svg?style=flat-square)](https://packagist.org/packages/evanschleret/laravel-api-resource-tool)
+[![Tests](https://github.com/EvanSchleret/laravel-api-resource-tool/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/EvanSchleret/laravel-api-resource-tool/actions/workflows/tests.yml)
+[![License](https://img.shields.io/packagist/l/evanschleret/laravel-api-resource-tool.svg?style=flat-square)](https://packagist.org/packages/evanschleret/laravel-api-resource-tool)
+[![PHP Version](https://img.shields.io/packagist/php-v/evanschleret/laravel-api-resource-tool.svg?style=flat-square)](https://packagist.org/packages/evanschleret/laravel-api-resource-tool)
+[![Laravel](https://img.shields.io/badge/Laravel-12%20%7C%2013-FF2D20?style=flat-square&logo=laravel&logoColor=white)](README.md#requirements)
+[![Downloads](https://img.shields.io/packagist/dt/evanschleret/laravel-api-resource-tool.svg?style=flat-square)](https://packagist.org/packages/evanschleret/laravel-api-resource-tool)
+
 </div>
 
 Reusable JSON resource responses and request-driven Eloquent scopes for Laravel.
