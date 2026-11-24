@@ -12,13 +12,24 @@ use Illuminate\Support\Collection;
 
 class ResourceTool
 {
-    private static function paginationLimit(?int $paginationLimit): int
+    private static function paginationLimit(?int $paginationLimit, ?Request $request = null): int
     {
-        if ($paginationLimit !== null) {
-            return $paginationLimit;
+        if ($paginationLimit === null && $request !== null) {
+            $perPage = $request->query('perPage');
+
+            if (is_int($perPage) || is_string($perPage)) {
+                $requestedLimit = filter_var($perPage, FILTER_VALIDATE_INT);
+
+                if (is_int($requestedLimit) && $requestedLimit > 0) {
+                    $paginationLimit = $requestedLimit;
+                }
+            }
         }
 
-        return max(1, (int) config('laravel-api-resource-tool.pagination.default_per_page', 21));
+        $paginationLimit ??= max(1, (int) config('laravel-api-resource-tool.pagination.default_per_page', 21));
+        $maximum = max(1, (int) config('laravel-api-resource-tool.pagination.max_per_page', 100));
+
+        return min($paginationLimit, $maximum);
     }
 
     private static function makeJson(JsonResponse $response): JsonResponse
@@ -44,7 +55,7 @@ class ResourceTool
         return ResourceTool::makeJson(
             $resource::collection(
                 $builder
-                    ->paginate(ResourceTool::paginationLimit($paginationLimit))
+                    ->paginate(ResourceTool::paginationLimit($paginationLimit, $request))
                     ->withQueryString()
             )
                 ->toResponse($request)

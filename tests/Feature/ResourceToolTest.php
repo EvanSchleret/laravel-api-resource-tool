@@ -120,6 +120,83 @@ class ResourceToolTest extends TestCase
         $this->assertStringContainsString('filter=active', $payload['links']['next']);
     }
 
+    public function test_it_uses_a_positive_per_page_query_parameter(): void
+    {
+        config()->set('laravel-api-resource-tool.pagination.default_per_page', 3);
+        $this->setQueryParameters(['perPage' => '2']);
+
+        $response = ResourceTool::paginate(
+            $this->app['request'],
+            new JsonResource(new Entry),
+            Entry::query(),
+        );
+
+        $this->assertSame(2, $response->getData(true)['meta']['per_page']);
+    }
+
+    public function test_an_explicit_pagination_limit_takes_precedence_over_per_page(): void
+    {
+        $this->setQueryParameters(['perPage' => '1']);
+
+        $response = ResourceTool::paginate(
+            $this->app['request'],
+            new JsonResource(new Entry),
+            Entry::query(),
+            2,
+        );
+
+        $this->assertSame(2, $response->getData(true)['meta']['per_page']);
+    }
+
+    public function test_it_uses_the_configured_default_for_invalid_per_page_values(): void
+    {
+        config()->set('laravel-api-resource-tool.pagination.default_per_page', 3);
+
+        foreach (['invalid', '0', '-1', '2.5', ['2']] as $perPage) {
+            $this->setQueryParameters(['perPage' => $perPage]);
+
+            $response = ResourceTool::paginate(
+                $this->app['request'],
+                new JsonResource(new Entry),
+                Entry::query(),
+            );
+
+            $this->assertSame(3, $response->getData(true)['meta']['per_page']);
+        }
+    }
+
+    public function test_it_caps_page_number_and_cursor_pagination_limits(): void
+    {
+        config()->set('laravel-api-resource-tool.pagination.max_per_page', 3);
+        $this->setQueryParameters(['perPage' => '6']);
+
+        $pageResponse = ResourceTool::paginate(
+            $this->app['request'],
+            new JsonResource(new Entry),
+            Entry::query(),
+        );
+
+        $this->assertSame(3, $pageResponse->getData(true)['meta']['per_page']);
+
+        $explicitPageResponse = ResourceTool::paginate(
+            $this->app['request'],
+            new JsonResource(new Entry),
+            Entry::query(),
+            6,
+        );
+
+        $this->assertSame(3, $explicitPageResponse->getData(true)['meta']['per_page']);
+
+        $cursorResponse = ResourceTool::cursorPaginate(
+            $this->app['request'],
+            new JsonResource(new Entry),
+            Entry::query()->orderBy('id'),
+            6,
+        );
+
+        $this->assertSame(3, $cursorResponse->getData(true)['meta']['per_page']);
+    }
+
     public function test_it_returns_cursor_pagination_links_and_metadata(): void
     {
         Entry::query()->create(['name' => 'First']);

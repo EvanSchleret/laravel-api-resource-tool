@@ -65,6 +65,23 @@ php artisan vendor:publish --tag=laravel-api-resource-tool-config
 
 The configured `pagination.default_per_page` value is used by `paginate()` and `cursorPaginate()` when their limit argument is omitted. An explicit limit passed to either method takes precedence.
 
+`paginate()` also reads a positive integer `perPage` query parameter when no explicit limit is passed. For example, the following request asks for 50 results:
+
+```text
+GET /posts?perPage=50
+```
+
+When `perPage` is absent or invalid, `paginate()` uses `pagination.default_per_page`. Both pagination methods cap the selected limit at `pagination.max_per_page`, which defaults to 100. The maximum also applies to explicit limits. `cursorPaginate()` does not read the `perPage` query parameter.
+
+Set both pagination values in the published package configuration:
+
+```php
+'pagination' => [
+    'default_per_page' => 21,
+    'max_per_page' => 100,
+],
+```
+
 ## Response format
 
 Successful responses use the same envelope. A single resource or a collection returns its contents in `data`:
